@@ -1,0 +1,25 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: red_packet
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  data:
+    #单机
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 1800000
+      password: hq123456
+      lettuce:
+        pool:
+          max-active: 8 #最大连接数
+          max-wait: -1    #最大阻塞等待时间(负数表示没限制)
+          max-idle: 5    #最大空闲
+          min-idle: 0     #最小空闲
