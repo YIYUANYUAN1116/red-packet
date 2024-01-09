@@ -1,0 +1,9 @@
+/* 红包下落的效果*/
+@keyframes drop {
+  0% {
+    transform: translate3d(0, -20vh, 0) rotate(15deg);
+  }
+  100% {
+    transform: translate3d(0, 120vh, 0) rotate(30deg);
+  }
+}

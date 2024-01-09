@@ -9,7 +9,6 @@ import com.xht.red.model.RedPackgeDto;
 import com.xht.red.model.RedPackgeVo;
 import com.xht.red.util.RedPackageUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +22,16 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author: yzd
  * @create: 2024-01-08
  **/
 
-@RequestMapping("/api")
-@Tag(name = "红包活动接口")
+@RequestMapping("/api/v2")
+@Tag(name = "红包活动接口V2")
 @Slf4j
-public class RedPackageController {
+public class RedPackageV2Controller {
 
 
     @Autowired
