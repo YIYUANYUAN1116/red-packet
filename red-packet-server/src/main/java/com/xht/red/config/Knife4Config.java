@@ -1,5 +1,6 @@
 package com.xht.red.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableKnife4j
 public class Knife4Config {
 
     @Bean
@@ -15,7 +17,7 @@ public class Knife4Config {
         //分组配置 /api开头的在web-api分组
         return GroupedOpenApi.builder()
                 .group("web-api")
-                .pathsToMatch("/api")
+                .pathsToMatch("/**")
                 .build();
     }
 

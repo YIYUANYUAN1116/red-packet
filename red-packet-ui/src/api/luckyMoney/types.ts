@@ -8,4 +8,13 @@ export interface LuckyMoneyActive{
     activityKey: string
     // 红包唯一key
     redPackageKey: string
+
+    //红包总金额
+    totalMoney: number
+
+    //红包个数
+    redPackageNumber: number
+
+    //活动开启时间
+    date: Date
 }

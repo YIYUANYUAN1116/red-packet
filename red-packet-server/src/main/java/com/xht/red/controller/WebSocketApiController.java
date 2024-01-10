@@ -61,7 +61,7 @@ public class WebSocketApiController {
 
     @OnMessage
     public void onMessage(Session session, @PathParam("activityKey") String activityKey, @PathParam("token") String token,String message){
-        log.info("[websocket] 收到消息：sessionId={}，message={}", session.getId(), message);
+//        log.info("[websocket] 收到消息：sessionId={}，message={}", session.getId(), message);
 
     }
 

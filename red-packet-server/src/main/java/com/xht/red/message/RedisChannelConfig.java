@@ -43,7 +43,7 @@ public class RedisChannelConfig {
      */
     @Bean
     public MessageListenerAdapter messageListenerAdapter(RedisMsgListener redisMsgListener){
-        //这个地方 是给messageListenerAdapter 传入一个消息接受的处理器，利用反射的方法调用“receiveMessage”
-        return new MessageListenerAdapter(redisMsgListener,"receiveMessage");
+        //这个地方 是给messageListenerAdapter 传入一个消息接受的处理器
+        return new MessageListenerAdapter(redisMsgListener);
     }
 }

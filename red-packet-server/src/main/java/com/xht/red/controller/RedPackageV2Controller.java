@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/v2")
 @Tag(name = "红包活动接口V2")
 @Slf4j
+@RestController
 public class RedPackageV2Controller {
 
 
