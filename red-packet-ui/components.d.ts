@@ -8,13 +8,17 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CountdownMask: typeof import('./src/components/countdownMask.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     RewardMask: typeof import('./src/components/rewardMask.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     VanButton: typeof import('vant/es')['Button']
+    VanCountDown: typeof import('vant/es')['CountDown']
     VanField: typeof import('vant/es')['Field']
     VanFiled: typeof import('vant/es')['Filed']
+    VanIcon: typeof import('vant/es')['Icon']
+    VanOverlay: typeof import('vant/es')['Overlay']
     VanStepper: typeof import('vant/es')['Stepper']
+    VanSwipe: typeof import('vant/es')['Swipe']
+    VanSwipeItem: typeof import('vant/es')['SwipeItem']
   }
 }

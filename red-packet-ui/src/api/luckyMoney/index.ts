@@ -1,4 +1,5 @@
 import http from '@/utils/http'
+import { LuckyMoneyActive } from './types'
 
 /**
  * @description 创建红包
@@ -30,5 +31,16 @@ export function getRedPacket(redPackageKey: string){
 export function getRedPacketRecord(redPackageKey: string) {
     return http.get<number>(
         `/api/v2/record/${redPackageKey}`,
+    )
+}
+
+/**
+ * 
+ * @param luckyMoneyActive 活动信息
+ * @returns 
+ */
+export function addRedPacket(luckyMoneyActive: LuckyMoneyActive) {
+    return http.post<string>(
+        `/api/v2//add`,luckyMoneyActive,
     )
 }

@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/v1")
 @Tag(name = "红包活动接口V1")
 @Slf4j
+@RestController
 public class RedPackageV1Controller {
 
     @Autowired
@@ -38,7 +39,6 @@ public class RedPackageV1Controller {
      * @Date: 2024/1/9
      */
 
-    @PostMapping("/add")
     @Operation(summary = "发红包")
     @GetMapping(value = "/send/{totalMoney}/{redPackageNumber}")
     public Result<String> sendRedPackage(@PathVariable int totalMoney, @PathVariable int redPackageNumber) {

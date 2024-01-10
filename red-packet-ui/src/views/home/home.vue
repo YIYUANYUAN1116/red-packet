@@ -17,6 +17,7 @@
   align-items: center; //定义项目在竖直方向上对齐方式）
   justify-content: space-around; //定义项目在主轴上的对齐方式
   height: 26vh;
+  margin: 3%;
 }
 
 </style>

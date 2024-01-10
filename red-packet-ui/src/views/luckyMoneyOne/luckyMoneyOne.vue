@@ -2,11 +2,11 @@
     <div class="page-container">
         <van-button type="primary" size="large" @click="startRewardOverlay">展示上次获取的红包</van-button>
         
-        <van-filed label="持续时长">
+        <van-field label="持续时长">
             <template #input>
                 <van-stepper v-model="duration" input-width="30vw" min="5000" step="1000"/>
             </template>    
-        </van-filed>
+        </van-field>
         <van-field label="生成速率">
       <template #input>
         <van-stepper v-model="generationRate" input-width="30vw" min="100" step="100"/>
@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import LuckyMoney from "@/views/luckyMoneyOne/components/luckyMoney.vue";
-import {ref, h, render, onMounted} from "vue";
+import {ref, h, render} from "vue";
 import CountdownMask from "@/components/countdownMask.vue";
 import RewardMask from "@/components/rewardMask.vue";
 import {creatRedPacket, getRedPacket} from "@/api/luckyMoney";
@@ -133,6 +133,48 @@ async function createLuckyMoneyActive() {
 //点击红包回调
 async function clickLuckyMoneyCallback() {
     await getRedPacket(luckyMoneyKey.value)
+}
+
+//创建红包
+function createLuckyMoney(){
+  /**
+   * 为什么不直接使用render函数将虚拟dom渲染到luckyMoneyContainerRef中呢？
+   * 因为render函数将虚拟dom渲染到容器dom的时候，会将容器中的所有内容清空，导致我们之前添加的红包都消失不见。
+   * 下方是采用方式：先创建一个div容器，将虚拟dom渲染到这个div容器中，这个时候这个div容器实际上结构已经和真实dom一样了，
+   * 然后再将这个div容器的第一个子元素（就是我们创建的红包）使用原生的方式添加到luckyMoneyContainerRef容器中，这样就避免了上述的问题。
+   * */
+      // 使用h函数创建虚拟dom，再使用render函数将虚拟dom渲染为真实dom，最后将真实dom添加到容器中
+
+  const container: HTMLDivElement = document.createElement(`div`)
+  render(h(LuckyMoney,{
+    clickCallback: clickLuckyMoneyCallback,
+  }),container)
+
+  const firstChild = container.firstElementChild
+  firstChild && luckyMoneyContainerRef.value?.appendChild(firstChild)
+}
+
+
+function createLuckyMoneyInterval(duration: number,timeInterval: number){
+  startLuckyMoneyMask();
+
+  let timer: NodeJS.Timer | null = null;
+  const startTiem =  new Date().getTime()
+  console.log('开始掉落红包')
+  timer = setInterval(()=>{
+    //当前时间
+    const now  = new Date().getTime()
+
+    if(now - startTiem >= duration){
+      clearInterval(timer as NodeJS.Timer)
+      timer = null
+      console.log(`结束掉落红包`)
+      startRewardOverlay()
+    }else{
+      createLuckyMoney();
+    }
+  },timeInterval);
+
 }
 
 </script>

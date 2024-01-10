@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 console.log(
-    '%c Welcome to ShangGuiGu! ',
+    '%c Welcome to xht redPacket Rain! ',
     'color:#1e80ff;font-size:20px;background:#fff;padding:8px;',
 )
 // 生成token
