@@ -54,7 +54,7 @@ const luckyMoneyKey = ref('')
 //活动10秒后开始
 const luckyMoneyDate = () =>{
   var now = moment();
-  now.add(100, 's');
+  now.add(10, 's');
   return now.valueOf()
 }
 
@@ -139,7 +139,7 @@ async function createLuckyMoneyActive() {
     const res = await addRedPacket(luckyMoneyActive)
     luckyMoneyKey.value = res.data
     if(luckyMoneyKey.value){
-        const{connect,disconnect} = useWebsocket(`ws://localhost:8888/api/websocket/${luckyMoneyKey.value}/${localStorage.getItem('token')}`,
+        const{connect,disconnect} = useWebsocket(`ws://192.168.213.134:8888/api/websocket/${luckyMoneyKey.value}/${localStorage.getItem('token')}`,
             (res: LuckyMoneyActive) => {
                 duration.value = res.duration
                 generationRate.value = res.generationRate
