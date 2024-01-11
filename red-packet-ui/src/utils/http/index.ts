@@ -6,10 +6,7 @@ import { ResultData } from "./type";
 
 export const service: AxiosInstance = axios.create({
     //不同环境设不同的baseURL
-    baseURL:
-        import.meta.env.VITE_APP_NODE_ENV === 'development'
-            ? import.meta.env.VITE_APP_BASE_API
-            : import.meta.env.VITE_APP_BASE_URL,
+    baseURL:import.meta.env.VITE_APP_BASE_API,
     timeout: 25000,
 })
 

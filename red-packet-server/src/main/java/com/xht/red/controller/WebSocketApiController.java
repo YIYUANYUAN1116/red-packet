@@ -55,6 +55,8 @@ public class WebSocketApiController {
             Object object = redisTemplate.opsForHash().get(Constant.RED_PACKAGE_USER_KEY + activityKey, token);
             if (object == null){
                 WebSocketRemoteContainerUtil.sendMsg(session,token,redPackgeVo,redisTemplate);
+            }else {
+                log.info("用户已开启红包，不能再抢");
             }
         }
     }

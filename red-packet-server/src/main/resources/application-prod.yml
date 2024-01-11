@@ -1,0 +1,18 @@
+server:
+  port: 8888
+
+spring:
+  data:
+    #单机
+    redis:
+      host: 192.168.213.134
+      port: 6379
+      database: 0
+      timeout: 1800000
+      password: yzd2021$$
+      lettuce:
+        pool:
+          max-active: 8 #最大连接数
+          max-wait: -1    #最大阻塞等待时间(负数表示没限制)
+          max-idle: 5    #最大空闲
+          min-idle: 0     #最小空闲
