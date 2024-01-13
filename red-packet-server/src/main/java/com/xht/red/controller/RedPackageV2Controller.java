@@ -11,6 +11,9 @@ import com.xht.red.util.RedPackageUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +41,8 @@ public class RedPackageV2Controller {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     /**
      * 添加活动
      * @author: yzd
@@ -52,34 +57,39 @@ public class RedPackageV2Controller {
         // 2.活动开始后才初始化红包雨相关信息，保证所有用户同一时刻抢红包（公平、准点、公正）
         // 2.1 计算活动开始的剩余时间：单位秒(方法用于将此瞬间与时区结合在一起)
         LocalDateTime localDateTime = redPackgeDto.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        long delayTime = ChronoUnit.SECONDS.between(LocalDateTime.now(), localDateTime);
+        long delayTime = ChronoUnit.MILLIS.between(LocalDateTime.now(), localDateTime);
+
+        //2.2.1活动开始，拆分红包
+        Integer[] splitRedPackages = RedPackageUtil.splitRedPackageAlgorithm(redPackgeDto.getTotalMoney(), redPackgeDto.getRedPackageNumber());
+        log.info("拆红包: {}", JSON.toJSONString(splitRedPackages));
+        String uuid = IdUtil.simpleUUID();
+        redisTemplate.opsForList().leftPushAll(Constant.RED_PACKAGE_KEY+uuid,splitRedPackages);
+
+        // 2.2.3构建前端红包雨活动数据
+        RedPackgeVo redPackgeVo = new RedPackgeVo();
+        redPackgeVo.setGenerationRate(redPackgeDto.getGenerationRate());
+        redPackgeVo.setDuration(redPackgeDto.getDuration());
+        redPackgeVo.setActivityKey(redPackgeDto.getActivityKey());
+        redPackgeVo.setRedPackageKey(uuid);
+
+        //保存红包雨活动数据，后续会使用
+        redisTemplate.opsForValue().set(Constant.RED_PACKAGE_INFO_KEY+uuid,redPackgeVo,redPackgeDto.getDuration()+10000, TimeUnit.MILLISECONDS);
+
+
+        MessageProperties messageProperties = new MessageProperties();
+        messageProperties.setDelay((int) delayTime);
+        Message message = new Message(JSON.toJSONBytes(redPackgeVo),messageProperties);
+        rabbitTemplate.convertAndSend("redPacketExchange","red.packet.key",message);
 
         //todo 2.2 启动定时任务，注：正式环境可改为rabbitmq/rocketmq延迟消息，当前只是模拟
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.schedule(() -> {
-            //2.2.1活动开始，拆分红包
-            Integer[] splitRedPackages = RedPackageUtil.splitRedPackageAlgorithm(redPackgeDto.getTotalMoney(), redPackgeDto.getRedPackageNumber());
-            log.info("拆红包: {}", JSON.toJSONString(splitRedPackages));
-            String uuid = IdUtil.simpleUUID();
-            redisTemplate.opsForList().leftPushAll(Constant.RED_PACKAGE_KEY+uuid,splitRedPackages);
-
-            // 2.2.3构建前端红包雨活动数据
-            RedPackgeVo redPackgeVo = new RedPackgeVo();
-            redPackgeVo.setGenerationRate(redPackgeDto.getGenerationRate());
-            redPackgeVo.setDuration(redPackgeDto.getDuration());
-            redPackgeVo.setActivityKey(redPackgeDto.getActivityKey());
-            redPackgeVo.setRedPackageKey(uuid);
-
-            //保存红包雨活动数据，后续会使用
-            redisTemplate.opsForValue().set(Constant.RED_PACKAGE_INFO_KEY+uuid,redPackgeVo,redPackgeDto.getDuration()+10000, TimeUnit.MILLISECONDS);
-
-            // 2.2.4redis广播信息，服务器收到广播消息后，websocket推送消息给前端用户开启红包雨活动
-            redisTemplate.convertAndSend(Constant.RED_PACKAGE_REDIS_QUEUE_KEY, JSON.toJSONString(redPackgeVo));
-            log.info("红包雨活动广播：{}", JSON.toJSONString(redPackgeVo));
-
-        },delayTime, TimeUnit.SECONDS);
-
-        executor.shutdown();
+//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//        executor.schedule(() -> {
+//            // 2.2.4redis广播信息，服务器收到广播消息后，websocket推送消息给前端用户开启红包雨活动
+//            redisTemplate.convertAndSend(Constant.RED_PACKAGE_REDIS_QUEUE_KEY, JSON.toJSONString(redPackgeVo));
+//            log.info("红包雨活动广播：{}", JSON.toJSONString(redPackgeVo));
+//
+//        },delayTime, TimeUnit.SECONDS);
+//        executor.shutdown();
         return Result.build(redPackgeDto.getActivityKey(), ResultCodeEnum.SUCCESS);
     }
 
