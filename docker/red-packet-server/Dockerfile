@@ -1,9 +1,13 @@
 FROM openjdk:17
 LABEL maintainer=xht
 
-ENV PARAMS="--server.port=8888 --spring.profiles.active=prod"
+
+#docker run -e PARAMS="--server.port 9090"
+ENV PARAMS="--server.port=8501 --spring.profiles.active=dev"
 RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
 
-COPY target/*.jar /redpacket-server.jar
-EXPOSE 8888
-ENTRYPOINT ["/bin/sh","-c","java -jar redpacket-server.jar ${PARAMS}"]
+COPY target/*.jar /app.jar
+EXPOSE 8501
+
+ENV JAVA_OPTS=""
+ENTRYPOINT ["/bin/sh","-c","java -Djava.security.egd=file:/dev/./urandom $JAVA_OPTS -jar app.jar ${PARAMS}"]

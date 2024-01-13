@@ -37,6 +37,7 @@ import moment from "moment";
 
 const luckyMoneyContainerRef = ref<HTMLImageElement>()
 const rewardMaskRef = ref<InstanceType<typeof RewardMask>>()
+const websocketurl = import.meta.env.VITE_APP_WEBSORKET
 
 //#region <创建红包相关>
 // 持续时长 单位ms
@@ -138,8 +139,9 @@ async function createLuckyMoneyActive() {
 
     const res = await addRedPacket(luckyMoneyActive)
     luckyMoneyKey.value = res.data
+    console.log(websocketurl)
     if(luckyMoneyKey.value){
-        const{connect,disconnect} = useWebsocket(`ws://192.168.213.134:8888/api/websocket/${luckyMoneyKey.value}/${localStorage.getItem('token')}`,
+        const{connect,disconnect} = useWebsocket(`ws://${websocketurl}/api/websocket/${luckyMoneyKey.value}/${localStorage.getItem('token')}`,
             (res: LuckyMoneyActive) => {
                 duration.value = res.duration
                 generationRate.value = res.generationRate

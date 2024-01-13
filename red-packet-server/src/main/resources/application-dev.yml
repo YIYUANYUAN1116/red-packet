@@ -15,3 +15,15 @@ spring:
           max-wait: -1    #最大阻塞等待时间(负数表示没限制)
           max-idle: 5    #最大空闲
           min-idle: 0     #最小空闲
+  rabbitmq:
+    username: guest
+    password: guest
+    port: 5672
+    host: 192.168.213.134
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true #只要抵达队列，以异步发送优先回调我们这个returnConfirm
+    listener:
+      direct:
+        acknowledge-mode: manual #手动确认消息被消费

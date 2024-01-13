@@ -1,6 +1,6 @@
 package com.xht.red.message;
 
-import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson.JSON;
 import com.xht.red.model.RedPackgeVo;
 import com.xht.red.util.WebSocketRemoteContainerUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class RedisMsgListener implements MessageListener {
         Object deserialize = redisTemplate.getValueSerializer().deserialize(new String(message.getBody()).getBytes());
         log.info("监听到活动开始消息"+deserialize);
         if (deserialize != null){
-            RedPackgeVo redPackgeVo = JSON.parseObject(deserialize.toString(),RedPackgeVo.class);
+            RedPackgeVo redPackgeVo = JSON.parseObject(deserialize.toString(), RedPackgeVo.class);
             //WebSocket发送消息
             WebSocketRemoteContainerUtil.sendMsg(redPackgeVo, redisTemplate);
         }
